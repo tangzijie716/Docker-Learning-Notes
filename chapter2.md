@@ -33,22 +33,6 @@ Docker基础指令快速查询：
 http://www.cnblogs.com/xiadongqing/p/6144053.html
 
 
-## Dockerfile 
-一个Docker image 的生成，依赖于一个Dockerfile
-Dockerfile 实际上就是从原始image 一层层的添加组件构建起来的。 
-生成Dockerfile , Dockerfile 需要与所有的Context文件放在同一目录下
-
-
-	# Dockerfile -[Name]   // Dockerfile的名字
-	FROM [Basic Image]   //制定原始image
-	COPY [xxxx] /[yyyy]   //简单的从当前文件系统拷贝文件到Docker文件系统
-	EXPOSE 8082 8083    //制定Container 侦听的网络接口
-	ENTRYPOINT ["java", "-jar", "/review-0.0.1-SNAPSHOT.jar", "server", "config.yml”]  //制定Docker的启动脚本
-	CMD []   // Docker 默认参数设置，该例里面留空
-
-
-通过Docker file构建镜像 ： docker build -t [Image Name] [Source Directory] 
-
 
 ## Docker Repostroy
 ### 私有库
@@ -90,4 +74,41 @@ Dockerfile 实际上就是从原始image 一层层的添加组件构建起来的
 >* 停止所有的容器组：docker-compose kill
 >* 删除容器组：docker-compose rm -f
 >* 容器扩展：docker-compose scale 
+
+
+
+
+## Dockerfile 
+### 基础构建
+一个Docker image 的生成，依赖于一个Dockerfile
+Dockerfile 实际上就是从原始image 一层层的添加组件构建起来的。 
+生成Dockerfile , Dockerfile 需要与所有的Context文件放在同一目录下
+
+
+	# Dockerfile -[Name]   // Dockerfile的名字
+	FROM [Basic Image]   //制定原始image
+	COPY [xxxx] /[yyyy]   //简单的从当前文件系统拷贝文件到Docker文件系统
+	EXPOSE 8082 8083    //制定Container 侦听的网络接口
+	ENTRYPOINT ["java", "-jar", "/review-0.0.1-SNAPSHOT.jar", "server", "config.yml”]  //制定Docker的启动脚本
+	CMD []   // Docker 默认参数设置，该例里面留空
+
+
+通过Docker file构建镜像 ： docker build -t [Image Name] [Source Directory] 
+
+### 一些原则
+* 尽量使用专用的构建镜像如openjdk， 而避免从基础镜像开始如ubuntu
+* 应尽量使用 multiplestage build 
+* 尽可能把指令写成一行以减少layer的build， 如 RUN apt-get -y update && apt-get install -y python
+* 如果多个container有很多共同的layer， 建议构建自己的基础镜像以提高读取效率
+* 在构建镜像的过程中使用清晰的tag便于管理
+* 不要在container内部保存数据，在开发环境使用bind mount，在生产环境使用volume 
+* 尽量使用swarm提供冗余和扩展性，使用docker stack deploy替代docker pull 部署提高效率
+* 构建自己的容器 CICD Pipeline 提高发布效率
+* 
+* 
+* 
+* 
+* 
+
+
 
