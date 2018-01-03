@@ -52,7 +52,6 @@ Docker VM需要启用Oracle Virtualbox 虚拟平台
 > docker swarm leave 
 > docker swarm leave --force   // Swarm Manager 上使用
 
-
 ##Docker stack 集群部署
 利用docker-compose 部署： docker stack deploy -c docker-compose.yml [stack name]
 
@@ -71,16 +70,29 @@ Docker VM需要启用Oracle Virtualbox 虚拟平台
       - "80:80"
     networks:
       - webnet
+
+    visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]    //指定部署的Node
+    networks:
+      - webnet   
 	networks:
 	  webnet:  
 
-
+查看stack状态： docker stack ps [stackname]
 删除集群：docker stack rm [stackname]
 
-docker stack ps [stackname]
 
 ## Docker Service
 服务都是依靠docker stack 部署的
 
 查看服务状态： docker service ps [服务名称_应用名]
-docker service ls
+查看启动的服务清单  docker service ls
+
+xxx
